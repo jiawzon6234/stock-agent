@@ -1,8 +1,11 @@
 """
 stock_tracker.py — 主程式：排程 + 協調各模組
 用法：
-  python stock_tracker.py        # 排程模式（正式啟動）
-  python stock_tracker.py test   # 測試模式（立即發送一次）
+  python stock_tracker.py             # 排程模式（正式啟動）
+  python stock_tracker.py test        # 測試模式（立即發送台股+美股）
+  python stock_tracker.py once        # 立即發送台股+美股，發完即退出
+  python stock_tracker.py once 台股  # 立即發送指定市場，發完即退出
+  python stock_tracker.py once 美股
 """
 
 import sys
@@ -60,9 +63,20 @@ def setup_schedule():
 
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1 and sys.argv[1] == "test":
+    mode = sys.argv[1] if len(sys.argv) > 1 else ""
+
+    if mode == "test":
         print("🧪 測試模式：立即發送一次")
         run_report("台股")
         run_report("美股")
+    elif mode == "once":
+        market = sys.argv[2] if len(sys.argv) > 2 else None
+        if market:
+            print(f"⚡ once 模式：發送 {market}")
+            run_report(market)
+        else:
+            print("⚡ once 模式：發送台股 + 美股")
+            run_report("台股")
+            run_report("美股")
     else:
         setup_schedule()
